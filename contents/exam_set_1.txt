@@ -24,7 +24,7 @@ END
 
 Q|4|single
 TEXT|If the preview screen does not show the corresponding element and the element name is grayed out in the scene resource list as shown in picture 1, it is because ( ).
-IMAGE|images/Q 29 crop.png
+IMAGE|images/Q29.png
 OPT|a|The model is hidden
 OPT|b|The model is locked
 OPT|c|The model is lost
