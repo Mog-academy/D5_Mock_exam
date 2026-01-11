@@ -1,3 +1,4 @@
+```html
 <!doctype html>
 <html lang="en">
 <head>
@@ -30,6 +31,23 @@
     }
     h1{ margin:0; font-size:22px; font-weight:800; }
     .sub{ margin-top:6px; color:var(--muted); font-size:13px; }
+
+    /* === Logo additions (safe, isolated) === */
+    .header-left{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    .header-logo-link{
+      display:inline-flex;
+      align-items:center;
+      text-decoration:none;
+    }
+    .header-logo{
+      height:42px;
+      width:auto;
+      display:block;
+    }
 
     .timer-float{
       position: fixed;
@@ -238,10 +256,17 @@
 
   <div class="wrap">
     <header>
-      <div>
-        <h1>D5 Render Certification Mock Exam</h1>
-        <div class="sub" id="statusText">Status: Not started</div>
+      <div class="header-left">
+        <a class="header-logo-link" href="https://mog-academy.com" target="_blank" rel="noopener">
+          <img src="images/logo.png" alt="Mo.G Academy" class="header-logo" />
+        </a>
+
+        <div>
+          <h1>D5 Render Certification Mock Exam</h1>
+          <div class="sub" id="statusText">Status: Not started</div>
+        </div>
       </div>
+
       <div class="pill" id="setPill">No set loaded</div>
     </header>
 
@@ -350,7 +375,7 @@
       <div class="notice hidden" id="sendNotice" style="margin-top:10px;">
         <div style="font-weight:900; margin-bottom:6px;">Result sending is not configured yet.</div>
         <div class="muted">
-          This page is hosted on <b>GitHub Pages</b> (static hosting). To email results automatically, you must use a third‑party form endpoint
+          This page is hosted on <b>GitHub Pages</b> (static hosting). To email results automatically, you must use a third-party form endpoint
           (example: Formspree / Getform / Basin) and paste the endpoint URL in the code (search for <b>FORM_ENDPOINT</b>).
         </div>
       </div>
@@ -1190,3 +1215,4 @@
 </script>
 </body>
 </html>
+```
