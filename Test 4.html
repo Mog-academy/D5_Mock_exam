@@ -1,0 +1,965 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>D5 Render Certification Mock Exam</title>
+  <style>
+    :root{
+      --bg:#ffffff;
+      --text:#000000;
+      --muted:#333333;
+      --orange:#f97316;
+      --orange-dark:#ea580c;
+      --line:#f97316;
+      --ok:#16a34a;
+      --bad:#dc2626;
+      --miss:#6b7280;
+      --panel:#fff;
+      --shadow: 0 8px 20px rgba(0,0,0,.12);
+    }
+    *{ box-sizing:border-box; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; }
+    body{ margin:0; background:var(--bg); color:var(--text); }
+    .wrap{ max-width: 980px; margin: 0 auto; padding: 20px 16px 30px; }
+
+    header{
+      display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--line);
+      margin-bottom: 16px;
+    }
+    h1{ margin:0; font-size:22px; font-weight:800; }
+    .sub{ margin-top:6px; color:var(--muted); font-size:13px; }
+
+    .timer-float{
+      position: fixed;
+      right: 16px;
+      top: 16px;
+      z-index: 9999;
+      background: #fff;
+      border: 2px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      box-shadow: var(--shadow);
+      font-variant-numeric: tabular-nums;
+      min-width: 98px;
+      text-align:center;
+    }
+    .timer-float .label{ font-size:11px; color:var(--muted); margin-bottom:4px; }
+    .timer-float .time{ font-size:16px; font-weight:900; }
+
+    .card{
+      background:var(--panel);
+      border:2px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; }
+    label{ display:block; font-size:13px; color:var(--muted); margin:10px 0 6px; }
+    input[type="text"], input[type="email"]{
+      width:100%; padding:10px 12px; border-radius:10px; border:2px solid var(--line); outline:none;
+      background:#fff; color:var(--text);
+    }
+    .field{ flex:1; min-width:220px; }
+
+    .btn{
+      border:2px solid var(--line);
+      background: var(--orange);
+      color:#fff;
+      padding:10px 12px;
+      border-radius: 10px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:13px;
+      text-decoration:none;
+      display:inline-block;
+    }
+    .btn:hover{ background: var(--orange-dark); border-color: var(--orange-dark); }
+    .btn.secondary{
+      background:#fff;
+      color: var(--orange);
+    }
+    .btn.secondary:hover{ background:#fff7ed; }
+    .btn:disabled{
+      opacity:.45;
+      cursor:not-allowed;
+    }
+
+    .divider{ height:2px; background: var(--line); margin: 14px 0; }
+
+    .q{
+      border-top: 2px solid var(--line);
+      padding-top: 14px;
+      margin-top: 14px;
+    }
+    .q:first-child{ border-top:none; padding-top:0; margin-top:0; }
+    .q-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+    .q-num{ font-weight:900; }
+    .q-type{ font-size:12px; color:var(--muted); }
+    .q-text{ margin:8px 0 10px; line-height:1.45; }
+
+    .choices{ display:flex; gap:10px; flex-wrap:wrap; }
+    .choice{
+      border:2px solid var(--line);
+      background:#fff;
+      padding:10px 12px;
+      border-radius: 12px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+      user-select:none;
+      max-width: 100%;
+    }
+    .choice span{ display:inline-block; }
+    .choice input{ cursor:pointer; }
+    .choice.long{ width:100%; }
+
+    .navRow{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top: 14px;
+    }
+    .pageInfo{ font-size:13px; color: var(--muted); font-weight:700; }
+
+    .results{
+      border:2px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      background:#fff;
+    }
+    .scoreBig{ font-size:20px; font-weight:900; margin-top:6px; }
+    .muted{ color: var(--muted); font-size:13px; line-height:1.45; }
+    .ok{ color: var(--ok); font-weight:900; }
+    .bad{ color: var(--bad); font-weight:900; }
+    .miss{ color: var(--miss); font-weight:900; }
+    .resultLine{ margin-top:10px; font-size:13px; }
+
+    table{ width:100%; border-collapse:collapse; font-size:13px; }
+    th, td{ padding:8px; border-bottom:2px solid var(--line); vertical-align:top; }
+    th{ text-align:left; font-weight:900; }
+
+    footer{
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 2px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      display:flex;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .hidden{ display:none !important; }
+    .pill{
+      display:inline-block;
+      padding:6px 10px;
+      border:2px solid var(--line);
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+      color: var(--orange-dark);
+      background:#fff7ed;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="timer-float" aria-live="polite">
+    <div class="label">TIMER</div>
+    <div class="time" id="timer">00:00</div>
+  </div>
+
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>D5 Render Certification Mock Exam</h1>
+        <div class="sub" id="statusText">Status: Not started</div>
+      </div>
+    </header>
+
+    <div class="card">
+      <div class="row">
+        <div class="field">
+          <label for="name">Enter your name</label>
+          <input id="name" type="text" placeholder="Full name" autocomplete="name" />
+        </div>
+        <div class="field">
+          <label for="email">Enter your email</label>
+          <input id="email" type="email" placeholder="name@email.com" autocomplete="email" />
+        </div>
+        <div style="min-width:180px;">
+          <button class="btn" id="startBtn" style="width:100%;">Start test</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUESTIONS (hidden until Start) -->
+    <div class="card hidden" id="questionsCard">
+      <div id="testArea"></div>
+
+      <div class="navRow">
+        <button class="btn secondary" id="prevBtn" disabled>Previous page</button>
+        <div class="pageInfo" id="pageInfo">Page 1 of 1</div>
+        <button class="btn secondary" id="nextBtn" disabled>Next page</button>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="navRow" style="justify-content:flex-end;">
+        <button class="btn" id="submitBtn" disabled>Submit answers</button>
+        <button class="btn secondary" id="redoBtn" disabled>Re-do test</button>
+      </div>
+    </div>
+
+    <div class="results" id="resultsArea">
+      <div class="muted">Click <b>Start test</b> to begin.</div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <div class="row" style="justify-content:space-between; align-items:center;">
+        <div style="font-weight:900;">Attempt history (saved on this computer)</div>
+        <a class="btn secondary hidden" id="emailBtn" href="#" target="_blank" rel="noopener">Email result to instructor</a>
+      </div>
+      <div style="margin-top:10px" id="historyArea" class="muted">No attempts yet.</div>
+      <div class="divider"></div>
+      <button class="btn secondary" id="clearHistoryBtn">Clear history</button>
+    </div>
+
+    <footer>
+      <div>© Mo.G Academy</div>
+      <div class="muted">D5 Render Certification Mock Exam</div>
+    </footer>
+  </div>
+
+<script>
+  /*
+    Questions included: 1–36, 38–42, 44–50.
+    Removed permanently: 37 and 43 (picture-based).
+    Total = 48.
+  */
+
+  // Utility: encode option safely in value="" and decode back
+  function escapeAttr(str){
+    return String(str)
+      .replaceAll("&","&amp;")
+      .replaceAll("\"","&quot;")
+      .replaceAll("'","&#39;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;");
+  }
+  function unescapeAttr(str){
+    return String(str)
+      .replaceAll("&quot;","\"")
+      .replaceAll("&#39;","'")
+      .replaceAll("&lt;","<")
+      .replaceAll("&gt;",">")
+      .replaceAll("&amp;","&");
+  }
+
+  // Build question objects
+  const QUESTIONS = [];
+
+  // 1–27 True/False
+  const TF_TEXT = {
+    1: "D5 primarily utilizes the dedicated graphics card (discrete GPU) during runtime. It is recommended to maintain a graphics card with relatively high performance for the best experience.",
+    2: "For data security considerations, each D5 account can have a maximum of 3 device records saved. If the number of client devices logged in under one account exceeds 3, the login interface will display the message \"The account login device exceeds the limit\". Users can unbind devices themselves in the \"MySpace - Device Management\" section. After unbinding, they will be able to log in normally.",
+    3: "Real-time plugins can be applied with D5 2.4 version.",
+    4: "If you use the real-time synchronization plug-in to synchronize a model into D5, you can convert a real-time model to a non-real-time model by using the \"Non-Live sync mode\" function.",
+    5: "Users can use the D5 LiveSync for 3ds Max to export Max models into .d5a or .skp formats.",
+    6: "Models synchronized to D5 using the converter can also be updated using the \"Reload\" feature in D5.",
+    7: "Support section tool flip feature. For section tube, it supports outside sectioning, which can keep its internal model display and better show the internal structure and details of the model.",
+    8: "In 'Fly' and 'Walk' modes, when pressing the Shift key, the speed will become 4 times faster than the original speed. Press the Space key to decelerate the speed.",
+    9: "When the preview quality is precise, part of the effect will be weakened or not displayed. When the preview quality is in smooth mode, you can get the best preview effect.",
+    10: "D5 render provides four basic light sources.",
+    11: "After grouping lights of the same type, the parameters of the lights will be automatically associated. When you select a group of lights in the scene or list, the right sidebar will automatically display the corresponding parameters of that type of light for uniform adjustment.",
+    12: "Due to the high resolution of HDRI which consumes resources during preview, D5 compresses HDRI to 2k for real-time previews while ensuring accurate lighting. The rendered output matches the actual size of the HDRI (up to 8k) during final rendering.",
+    13: "If users want to achieve a pure white background effect, they can use the built-in \"Pure White\" HDRI background and turn off automatic exposure (manually control the exposure effect).",
+    14: "The Car Paint material has two reflection layers, and the roughness can be defined separately.",
+    15: "Flowing Water Material has 5 different templates. In addition to color, normal, specular, and transparency, support for adjusting the foam, flow velocity, offset parameters",
+    16: "If the user wants to achieve the round corner effect, they can combine the \"Round Corner\" under \"Advanced\" in \"Inspector\". This allows real-time display and supports customizing the radius of the rounded corners. Users no longer need to separately create chamfer effects during modeling.",
+    17: "Decals supports custom editing.",
+    18: "Users can right-click on the corresponding asset in the Local Library to update the asset's thumbnail. The current options support capturing a picture directly from the D5 preview window or loading an image from the local library folder.",
+    19: "Users can achieve different path effects by adjusting the control point types (curve & straight line) of the path tool.",
+    20: "You can adjust the parameters in batch by multi-selecting and mixing objects with the same properties such as models, lights, paths, particles, and so on.",
+    21: "The same preset parameters can be reused in other projects with one click.",
+    22: "Users cannot customize the AO-Radius parameter to control how much surrounding diffuse light is blocked when objects intersect or are close to each other.",
+    23: "D5 Curated is an independent section in D5 Studio, which contains preset resources created by a group of excellent designers and design teams invited by D5. D5 Curated will be updated continuously to help users create high-quality scenes with ease.",
+    24: "When you select shot, the \"Auto View Interval\" option in the right sidebar parameter is not ticked by default. After ticking this option, if you change a certain time in the shot, the time interval of each view in the shot will be recalculated automatically, so that the speed is always the same between different views.",
+    25: "Use the shortcut K to quickly create a keyframe.",
+    26: "The environment and post parameters in shot and view can be duplicated and pasted by right click. Right-click on the shot to \"update all parameters\", and batch update the environment and post parameters of all views in the shot.",
+    27: "When applying the AI Make Seamless option to the textures, users can remove seams either vertically or horizontally to achieve the desired effect. Pressing Ctrl+Z to undo the operation is not supported."
+  };
+
+  for (let i=1;i<=27;i++){
+    QUESTIONS.push({
+      id: i,
+      type: "tf",
+      text: TF_TEXT[i],
+      options: ["True","False"]
+    });
+  }
+
+  // 28–36 single choice
+  QUESTIONS.push({ id: 28, type:"single", text: "After logging in to the account, you can open the Widget in the ( ) and then use the Widget function.", options:["Tools","Account","View","Preference"] });
+  QUESTIONS.push({ id: 29, type:"single", text: "If the preview screen does not show the corresponding element and the element name is grayed out in the scene resource list as shown in picture 1, it is because ( ).", options:["The model is hidden","The model is locked","The model is lost","The layer is hidden"] });
+  QUESTIONS.push({ id: 30, type:"single", text: "By filtering the ( ) list on the left side, you can select a specific type of element by dragging a box around it.", options:["Layer Management","Select all Objects","Multi Select","Object"] });
+  QUESTIONS.push({ id: 31, type:"single", text: "In which mode, the speed is not adjustable?", options:["Walk","Orbit","Fly","Smooth"] });
+  QUESTIONS.push({ id: 32, type:"single", text: "In D5 Render, which kinds of controls can be hidden by shortcut L?", options:["Light control","Particle control","Path control","All kinds"] });
+  QUESTIONS.push({ id: 33, type:"single", text: "To individually select a single light or element within a group, you can ( ) that light or element in the preview interface.", options:["Double-click","Click","Ctrl+click","Alt+click"] });
+  QUESTIONS.push({ id: 34, type:"single", text: "The Sky Color adjustment option is added to the HDRI mode to support hue and ( ) adjustments.", options:["Hue","Level","Saturation","Contrast"] });
+  QUESTIONS.push({ id: 35, type:"single", text: "Users can adjust the ( ) parameter to control the speed of the water flow animation, enabling the creation of water effects at various speeds as needed.", options:["Flow Velocity","Depth","Normal","Scattering color"] });
+  QUESTIONS.push({ id: 36, type:"single", text: "D5's transparent material templates allow users to control the transparency of materials with black-and-white maps applied to the ( ) parameter.", options:["Transparency","Semi-transparency","Full transparency","Opacity"] });
+
+  // 37 removed (picture) — skip
+
+  // 38–42 single choice
+  QUESTIONS.push({ id: 38, type:"single", text: "Users can press the ( ) key to reduce or add scatter areas to select the scatter objects when using the D5 Scatter.", options:["Alt","X","Shift","Ctrl"] });
+  QUESTIONS.push({
+    id: 39, type:"single", text: "Which of the following is not a proper way to use D5 Scatter?",
+    options:[
+      "Further divide the scatter area into several sub areas and manage the sub areas via Scatter Area.",
+      "Erase the created scatter area with the Eraser tool.",
+      "Randomly arrange the overall global growth effect by adjusting the Random Seed parameter.",
+      "Avoid scattering plants or objects in defined areas with the Cull Effect."
+    ]
+  });
+  QUESTIONS.push({ id: 40, type:"single", text: "Click \"+Custom LUT\" in the drop-down menu to import a 3D LUT file in ( ) format.", options:[".xmp",".cube",".3dl",".dng"] });
+  QUESTIONS.push({ id: 41, type:"single", text: "When editing videos, the default aspect ratio for new clips is ( ). To adjust the video aspect ratio, select the corresponding clip and modify its aspect ratio in the right sidebar.", options:["4:3","1:1","16:9","3:2"] });
+  QUESTIONS.push({
+    id: 42, type:"single",
+    text: "When using the AI Post-Processing feature, if users want to select specific parts of an image for enhancement and leave the remaining unselected parts unchanged, they can ( ).",
+    options:[
+      "Click the AI Enhancer feature to achieve automatic recognition.",
+      "Choose Specified Content in the AI Enhancer to adjust the relevant parameters and click to save the selection (which allows users to assign different weights to different areas, thus addressing the enhancement needs of different materials simultaneously).",
+      "Choose Sharpening or Denoising in the Effect feature, and adjust the Transparency parameter.",
+      "Choose the AI Style Transfer feature and Region-Specific Style Application."
+    ]
+  });
+
+  // 43 removed (picture) — skip
+
+  // 44–50 multiple choice (multi)
+  QUESTIONS.push({
+    id: 44, type:"multi",
+    text: "Which of the following options correctly describe the function of different display modes?",
+    options:[
+      "\"Lit\" is the default mode, with a real-time preview of all materials and lights.",
+      "\"Clay Model\" mode overrides the material with white material, which makes it easier to emphasize the volume of the model.",
+      "\"Wireframe\" mode shows only edge lines in the scene, which helps observe the lighting.",
+      "\"still\" button controls the motion of dynamic elements in the scene.",
+      "\"Dynamic\" button controls the motion of dynamic elements in the scene."
+    ]
+  });
+
+  QUESTIONS.push({
+    id: 45, type:"multi",
+    text: "How to hide the light source icons/light controls in the scene?",
+    options:[
+      "Select \"Display - Light Source\" option in the scene controls on upper right corner of the viewport.",
+      "Use the shortcut L",
+      "Hide it directly in the scene resources list on the left",
+      "Use the shortcut I"
+    ]
+  });
+
+  QUESTIONS.push({
+    id: 46, type:"multi",
+    text: "To achieve caustics effect, you need to turn on the \"caustics\" option in both ( ) and ( ).",
+    options:[
+      "Materials",
+      "Environment & Effect",
+      "Lights (including base light and sunlight)",
+      "Models"
+    ]
+  });
+
+  QUESTIONS.push({
+    id: 47, type:"multi",
+    text: "Why doesn't the plant in the scene move with the wind?",
+    options:[
+      "Use plants not supporting wind movement",
+      "Open Smooth Mode in display settings",
+      "\"Real-time\" in display mode is not turned on",
+      "Paused the animation of wind-moving plants",
+      "Wind effect is not enabled in the environment."
+    ]
+  });
+
+  QUESTIONS.push({
+    id: 48, type:"multi",
+    text: "How can we directly create scatter areas when using D5 Scatter?",
+    options:[
+      "Select the area (model) for scatter directly in the Preview interface.",
+      "Click on Add Scatter Surface-Select Material/Model in the upper navigation bar.",
+      "Create a scatter area by selecting a material or model with the shortcut key X.",
+      "Select the objects for scatter directly from the scene list."
+    ]
+  });
+
+  QUESTIONS.push({
+    id: 49, type:"multi",
+    text: "What modes are included in the stylization of D5?",
+    options:["Shadow Mode","AO","Shading Mode","Outline Mode","Z Depth"]
+  });
+
+  QUESTIONS.push({
+    id: 50, type:"multi",
+    text: "Which of the following effects can be achieved by using the AI Post-Processing feature?",
+    options:[
+      "Use the AI Enhancer feature to enhance the details of rendered images, including lighting, materials, characters, vehicles and vegetation.",
+      "When using the AI Style Transfer feature, users can choose \"Stylized\" for a one-click transfer to watercolor, cartoon, scale model, and voxel styles, or choose \"Realistic\" for a quick transfer to sunset, night, spring, summer, autumn and winter styles.",
+      "If users need to apply effects such as sharpening and denoising to the original image, they can achieve directly through the \"Effect\" in the AI Post-Processing panel."
+    ]
+  });
+
+  // Answer key from your provided list, with 37 and 43 removed.
+  // For scoring:
+  //  - tf/single: correct if userAnswer === correct
+  //  - multi: correct if exact set match (certification-grade)
+  const ANSWER_KEY = {
+    1:  { type:"tf",    correct: ["True"] },
+    2:  { type:"tf",    correct: ["True"] },
+    3:  { type:"tf",    correct: ["True"] },
+    4:  { type:"tf",    correct: ["True"] },
+    5:  { type:"tf",    correct: ["False"] },
+    6:  { type:"tf",    correct: ["True"] },
+    7:  { type:"tf",    correct: ["True"] },
+    8:  { type:"tf",    correct: ["False"] },
+    9:  { type:"tf",    correct: ["True"] },
+    10: { type:"tf",    correct: ["True"] },
+    11: { type:"tf",    correct: ["True"] },
+    12: { type:"tf",    correct: ["True"] },
+    13: { type:"tf",    correct: ["True"] },
+    14: { type:"tf",    correct: ["True"] },
+    15: { type:"tf",    correct: ["True"] },
+    16: { type:"tf",    correct: ["True"] },
+    17: { type:"tf",    correct: ["True"] },
+    18: { type:"tf",    correct: ["True"] },
+    19: { type:"tf",    correct: ["True"] },
+    20: { type:"tf",    correct: ["True"] },
+    21: { type:"tf",    correct: ["True"] },
+    22: { type:"tf",    correct: ["False"] },
+    23: { type:"tf",    correct: ["True"] },
+    24: { type:"tf",    correct: ["True"] },
+    25: { type:"tf",    correct: ["True"] },
+    26: { type:"tf",    correct: ["True"] },
+    27: { type:"tf",    correct: ["True"] },
+
+    28: { type:"single", correct: ["View"] },
+    29: { type:"single", correct: ["The layer is hidden"] },
+    30: { type:"single", correct: ["Object"] },
+    31: { type:"single", correct: ["Orbit"] },
+    32: { type:"single", correct: ["All kinds"] },
+    33: { type:"single", correct: ["Ctrl+click"] },
+    34: { type:"single", correct: ["Saturation"] },
+    35: { type:"single", correct: ["Flow Velocity"] },
+    36: { type:"single", correct: ["Opacity"] },
+
+    // 37 removed
+
+    38: { type:"single", correct: ["X"] },
+    39: { type:"single", correct: ["Randomly arrange the overall global growth effect by adjusting the Random Seed parameter."] },
+    40: { type:"single", correct: [".cube"] },
+    41: { type:"single", correct: ["16:9"] },
+    42: { type:"single", correct: ["Choose Specified Content in the AI Enhancer to adjust the relevant parameters and click to save the selection (which allows users to assign different weights to different areas, thus addressing the enhancement needs of different materials simultaneously)."] },
+
+    // 43 removed
+
+    44: { type:"multi", correct: [
+      "\"Lit\" is the default mode, with a real-time preview of all materials and lights.",
+      "\"Clay Model\" mode overrides the material with white material, which makes it easier to emphasize the volume of the model.",
+      "\"still\" button controls the motion of dynamic elements in the scene.",
+      "\"Dynamic\" button controls the motion of dynamic elements in the scene."
+    ]},
+    45: { type:"multi", correct: [
+      "Select \"Display - Light Source\" option in the scene controls on upper right corner of the viewport.",
+      "Use the shortcut L"
+    ]},
+    46: { type:"multi", correct: [
+      "Environment & Effect",
+      "Lights (including base light and sunlight)"
+    ]},
+    47: { type:"multi", correct: [
+      "Use plants not supporting wind movement",
+      "Paused the animation of wind-moving plants",
+      "Wind effect is not enabled in the environment."
+    ]},
+    48: { type:"multi", correct: [
+      "Click on Add Scatter Surface-Select Material/Model in the upper navigation bar.",
+      "Create a scatter area by selecting a material or model with the shortcut key X."
+    ]},
+    49: { type:"multi", correct: [
+      "AO",
+      "Shading Mode",
+      "Outline Mode",
+      "Z Depth"
+    ]},
+    50: { type:"multi", correct: [
+      "Use the AI Enhancer feature to enhance the details of rendered images, including lighting, materials, characters, vehicles and vegetation.",
+      "When using the AI Style Transfer feature, users can choose \"Stylized\" for a one-click transfer to watercolor, cartoon, scale model, and voxel styles, or choose \"Realistic\" for a quick transfer to sunset, night, spring, summer, autumn and winter styles.",
+      "If users need to apply effects such as sharpening and denoising to the original image, they can achieve directly through the \"Effect\" in the AI Post-Processing panel."
+    ]}
+  };
+
+  const PER_PAGE = 5;
+  const totalPages = Math.ceil(QUESTIONS.length / PER_PAGE);
+
+  const UI = {
+    statusText: document.getElementById("statusText"),
+    name: document.getElementById("name"),
+    email: document.getElementById("email"),
+    startBtn: document.getElementById("startBtn"),
+    questionsCard: document.getElementById("questionsCard"),
+    prevBtn: document.getElementById("prevBtn"),
+    nextBtn: document.getElementById("nextBtn"),
+    submitBtn: document.getElementById("submitBtn"),
+    redoBtn: document.getElementById("redoBtn"),
+    timer: document.getElementById("timer"),
+    testArea: document.getElementById("testArea"),
+    resultsArea: document.getElementById("resultsArea"),
+    historyArea: document.getElementById("historyArea"),
+    clearHistoryBtn: document.getElementById("clearHistoryBtn"),
+    pageInfo: document.getElementById("pageInfo"),
+    emailBtn: document.getElementById("emailBtn"),
+  };
+
+  let currentPage = 0;
+  let startedAt = null;
+  let timerInterval = null;
+  let elapsedMs = 0;
+  let submitted = false;
+
+  // Answers:
+  // tf/single => string
+  // multi => Set<string>
+  const userAnswers = {};
+
+  function pad2(n){ return String(n).padStart(2,"0"); }
+  function formatTime(ms){
+    const totalSec = Math.floor(ms / 1000);
+    const m = Math.floor(totalSec / 60);
+    const s = totalSec % 60;
+    return `${pad2(m)}:${pad2(s)}`;
+  }
+
+  function setStatus(text){
+    UI.statusText.textContent = `Status: ${text}`;
+  }
+
+  function startTimer(){
+    if (timerInterval) clearInterval(timerInterval);
+    startedAt = Date.now();
+    timerInterval = setInterval(() => {
+      elapsedMs = Date.now() - startedAt;
+      UI.timer.textContent = formatTime(elapsedMs);
+    }, 250);
+  }
+
+  function stopTimer(){
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = null;
+  }
+
+  function requireIdentity(){
+    const name = UI.name.value.trim();
+    const email = UI.email.value.trim();
+    if (!name || !email){ alert("Please enter your name and email first."); return null; }
+    if (!/^\S+@\S+\.\S+$/.test(email)){ alert("Please enter a valid email."); return null; }
+    return { name, email };
+  }
+
+  function pageSlice(pageIndex){
+    const start = pageIndex * PER_PAGE;
+    return QUESTIONS.slice(start, start + PER_PAGE);
+  }
+
+  function renderPage(){
+    UI.testArea.innerHTML = "";
+    const slice = pageSlice(currentPage);
+
+    slice.forEach(q => {
+      const wrap = document.createElement("div");
+      wrap.className = "q";
+
+      let typeLabel = "Single Choice";
+      if (q.type === "tf") typeLabel = "True or False";
+      if (q.type === "multi") typeLabel = "Multiple Choice";
+
+      const head = document.createElement("div");
+      head.className = "q-head";
+      head.innerHTML = `
+        <div class="q-num">${q.id}.</div>
+        <div class="q-type">${typeLabel}</div>
+      `;
+
+      const text = document.createElement("div");
+      text.className = "q-text";
+      text.textContent = q.text;
+
+      wrap.appendChild(head);
+      wrap.appendChild(text);
+
+      const choices = document.createElement("div");
+      choices.className = "choices";
+
+      q.options.forEach(opt => {
+        const lbl = document.createElement("label");
+        const isLong = opt.length > 70; // layout nicety for long lines
+        lbl.className = "choice" + (isLong ? " long" : "");
+        const v = escapeAttr(opt);
+
+        if (q.type === "multi"){
+          lbl.innerHTML = `
+            <input type="checkbox" name="q${q.id}" value="${v}" />
+            <span>${opt}</span>
+          `;
+        } else {
+          lbl.innerHTML = `
+            <input type="radio" name="q${q.id}" value="${v}" />
+            <span>${opt}</span>
+          `;
+        }
+        choices.appendChild(lbl);
+      });
+
+      wrap.appendChild(choices);
+      UI.testArea.appendChild(wrap);
+
+      // restore selection(s)
+      const saved = userAnswers[q.id];
+      if (q.type === "multi"){
+        const set = (saved instanceof Set) ? saved : new Set();
+        wrap.querySelectorAll(`input[name="q${q.id}"]`).forEach(inp => {
+          const vv = unescapeAttr(inp.value);
+          if (set.has(vv)) inp.checked = true;
+        });
+      } else {
+        if (typeof saved === "string" && saved){
+          wrap.querySelectorAll(`input[name="q${q.id}"]`).forEach(inp => {
+            const vv = unescapeAttr(inp.value);
+            if (vv === saved) inp.checked = true;
+          });
+        }
+      }
+    });
+
+    UI.pageInfo.textContent = `Page ${currentPage + 1} of ${totalPages}`;
+    UI.prevBtn.disabled = !startedAt || submitted || currentPage === 0;
+    UI.nextBtn.disabled = !startedAt || submitted || currentPage === totalPages - 1;
+
+    // submit allowed anytime after start
+    UI.submitBtn.disabled = !startedAt || submitted;
+  }
+
+  function scoreAttempt(){
+    let correctCount = 0;
+    let missedCount = 0;
+
+    const details = QUESTIONS.map(q => {
+      const key = ANSWER_KEY[q.id];
+      const right = key ? key.correct : [];
+      const user = userAnswers[q.id];
+
+      // missed?
+      let isMissed = false;
+      if (q.type === "multi"){
+        if (!(user instanceof Set) || user.size === 0) isMissed = true;
+      } else {
+        if (typeof user !== "string" || !user) isMissed = true;
+      }
+      if (isMissed) missedCount++;
+
+      // correctness?
+      let isCorrect = false;
+      if (!isMissed){
+        if (q.type === "multi"){
+          const userSet = user;
+          const rightSet = new Set(right);
+          isCorrect = (userSet.size === rightSet.size) && [...rightSet].every(v => userSet.has(v));
+        } else {
+          isCorrect = (user === right[0]);
+        }
+      }
+      if (isCorrect) correctCount++;
+
+      const userDisplay = (q.type === "multi")
+        ? ((user instanceof Set && user.size) ? [...user].join(" | ") : null)
+        : (typeof user === "string" && user ? user : null);
+
+      const rightDisplay = (q.type === "multi")
+        ? (right.length ? right.join(" | ") : "")
+        : (right[0] ?? "");
+
+      return { id:q.id, type:q.type, userDisplay, rightDisplay, isCorrect, isMissed };
+    });
+
+    return { correct: correctCount, total: QUESTIONS.length, missed: missedCount, details };
+  }
+
+  function renderResults(scored){
+    const percent = Math.round((scored.correct / scored.total) * 100);
+    let html = `
+      <div class="muted">Score:</div>
+      <div class="scoreBig">${scored.correct} / ${scored.total} (${percent}%)</div>
+      <div class="muted" style="margin-top:6px;">Missed: <b>${scored.missed}</b></div>
+      <div class="muted" style="margin-top:6px;">Time taken: <b>${formatTime(elapsedMs)}</b></div>
+      <div class="divider"></div>
+      <div style="font-weight:900; margin-bottom:8px;">Review</div>
+    `;
+
+    scored.details.forEach(d => {
+      if (d.isCorrect){
+        html += `<div class="resultLine ok">${d.id}. Correct</div>`;
+      } else if (d.isMissed){
+        html += `
+          <div class="resultLine miss">${d.id}. Missed</div>
+          <div class="muted">Correct answer: <b>${d.rightDisplay}</b></div>
+        `;
+      } else {
+        html += `
+          <div class="resultLine bad">${d.id}. Wrong</div>
+          <div class="muted">Your answer: <b>${d.userDisplay}</b></div>
+          <div class="muted">Correct answer: <b>${d.rightDisplay}</b></div>
+        `;
+      }
+    });
+
+    UI.resultsArea.innerHTML = html;
+  }
+
+  function buildInstructorEmailLink(scored){
+    const to = "hello@mog-academy.com";
+    const name = UI.name.value.trim();
+    const email = UI.email.value.trim();
+    const when = new Date().toLocaleString();
+    const timeTaken = formatTime(elapsedMs);
+    const scoreStr = `${scored.correct}/${scored.total}`;
+    const missedStr = `${scored.missed}`;
+
+    const lines = [];
+    lines.push(`Student Name: ${name}`);
+    lines.push(`Student Email: ${email}`);
+    lines.push(`Date/Time: ${when}`);
+    lines.push(`Score: ${scoreStr}`);
+    lines.push(`Missed: ${missedStr}`);
+    lines.push(`Time Taken: ${timeTaken}`);
+    lines.push(``);
+    lines.push(`Review (Q#: status | your answer | correct answer):`);
+
+    scored.details.forEach(d => {
+      const status = d.isCorrect ? "Correct" : (d.isMissed ? "Missed" : "Wrong");
+      const your = d.userDisplay ?? "-";
+      const right = d.rightDisplay ?? "-";
+      lines.push(`${d.id}: ${status} | ${your} | ${right}`);
+    });
+
+    const subject = `D5 Mock Exam Result – ${name} – ${scoreStr}`;
+    const body = lines.join("\n");
+    return `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  }
+
+  function loadHistory(){
+    try{
+      const raw = localStorage.getItem("mog_d5_mock_history_textonly_v1");
+      return raw ? JSON.parse(raw) : [];
+    }catch{ return []; }
+  }
+
+  function saveHistory(history){
+    localStorage.setItem("mog_d5_mock_history_textonly_v1", JSON.stringify(history));
+  }
+
+  function serializeAnswers(){
+    const out = {};
+    for (const q of QUESTIONS){
+      const v = userAnswers[q.id];
+      if (v instanceof Set) out[q.id] = [...v];
+      else if (typeof v === "string") out[q.id] = v;
+      else out[q.id] = null;
+    }
+    return out;
+  }
+
+  function renderHistory(){
+    const history = loadHistory();
+    if (!history.length){
+      UI.historyArea.innerHTML = `<div class="muted">No attempts yet.</div>`;
+      return;
+    }
+
+    const rows = history.slice().reverse().map(item => `
+      <tr>
+        <td>${item.when}</td>
+        <td><b>${item.score}</b></td>
+        <td>${item.timeTaken}</td>
+      </tr>
+    `).join("");
+
+    UI.historyArea.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Date / time</th>
+            <th>Score</th>
+            <th>Time taken</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    `;
+  }
+
+  function resetAll(){
+    // clear answers
+    for (const q of QUESTIONS){
+      delete userAnswers[q.id];
+    }
+
+    currentPage = 0;
+    startedAt = null;
+    stopTimer();
+    elapsedMs = 0;
+    UI.timer.textContent = "00:00";
+    submitted = false;
+
+    UI.name.disabled = false;
+    UI.email.disabled = false;
+
+    UI.startBtn.disabled = false;
+    UI.submitBtn.disabled = true;
+    UI.redoBtn.disabled = true;
+
+    UI.prevBtn.disabled = true;
+    UI.nextBtn.disabled = true;
+
+    UI.questionsCard.classList.add("hidden");
+
+    UI.emailBtn.classList.add("hidden");
+    UI.emailBtn.href = "#";
+
+    setStatus("Not started");
+    UI.resultsArea.innerHTML = `<div class="muted">Click <b>Start test</b> to begin.</div>`;
+
+    renderPage();
+  }
+
+  // events
+  UI.startBtn.addEventListener("click", () => {
+    const ident = requireIdentity();
+    if (!ident) return;
+
+    UI.name.disabled = true;
+    UI.email.disabled = true;
+
+    UI.startBtn.disabled = true;
+    UI.redoBtn.disabled = true;
+
+    setStatus("In progress");
+    startTimer();
+
+    UI.questionsCard.classList.remove("hidden");
+    renderPage();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  UI.testArea.addEventListener("change", (e) => {
+    if (!startedAt || submitted) return;
+
+    const input = e.target;
+    if (!input || !input.name || !input.name.startsWith("q")) return;
+
+    const qid = Number(input.name.slice(1));
+    const q = QUESTIONS.find(x => x.id === qid);
+    if (!q) return;
+
+    const value = unescapeAttr(input.value);
+
+    if (q.type === "multi"){
+      if (!(userAnswers[qid] instanceof Set)) userAnswers[qid] = new Set();
+      const set = userAnswers[qid];
+      if (input.checked) set.add(value);
+      else set.delete(value);
+    } else {
+      userAnswers[qid] = value;
+    }
+
+    UI.submitBtn.disabled = false;
+  });
+
+  UI.prevBtn.addEventListener("click", () => {
+    if (!startedAt || submitted) return;
+    if (currentPage > 0){
+      currentPage--;
+      renderPage();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  });
+
+  UI.nextBtn.addEventListener("click", () => {
+    if (!startedAt || submitted) return;
+    if (currentPage < totalPages - 1){
+      currentPage++;
+      renderPage();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  });
+
+  UI.submitBtn.addEventListener("click", () => {
+    if (!startedAt || submitted) return;
+
+    submitted = true;
+    stopTimer();
+    setStatus("Submitted");
+
+    UI.prevBtn.disabled = true;
+    UI.nextBtn.disabled = true;
+
+    const scored = scoreAttempt();
+    renderResults(scored);
+
+    const now = new Date();
+    const when = now.toLocaleString();
+    const timeTaken = formatTime(elapsedMs);
+    const scoreStr = `${scored.correct}/${scored.total}`;
+
+    const history = loadHistory();
+    history.push({
+      when,
+      score: scoreStr,
+      timeTaken,
+      name: UI.name.value.trim(),
+      email: UI.email.value.trim(),
+      answers: serializeAnswers()
+    });
+    saveHistory(history);
+    renderHistory();
+
+    UI.emailBtn.href = buildInstructorEmailLink(scored);
+    UI.emailBtn.classList.remove("hidden");
+
+    UI.submitBtn.disabled = true;
+    UI.redoBtn.disabled = false;
+  });
+
+  UI.redoBtn.addEventListener("click", () => resetAll());
+
+  UI.clearHistoryBtn.addEventListener("click", () => {
+    if (!confirm("Clear all saved attempts on this computer?")) return;
+    localStorage.removeItem("mog_d5_mock_history_textonly_v1");
+    renderHistory();
+  });
+
+  // init
+  (function init(){
+    UI.pageInfo.textContent = `Page 1 of ${totalPages}`;
+    renderHistory();
+    resetAll();
+  })();
+</script>
+</body>
+</html>
